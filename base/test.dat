@@ -1,0 +1,9 @@
+5 1000
+60 100 31 20 5
+
+5
+../bots/Random/Random
+../bots/Follower/Follower
+../bots/Probability/Probability
+../bots/Greedy/Greedy
+../bots/Prediction/Prediction
