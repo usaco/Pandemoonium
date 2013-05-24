@@ -6,8 +6,8 @@
 #define RUNNING 0
 #define ERROR -1
 
-extern unsigned int starting_money;
-extern unsigned int xrange;
+#define MAXAGENTS 16
+#define MAXCOWS 100
 
 struct agent_t
 {

@@ -7,7 +7,7 @@
    <agentexec>
  */
 
-#define DEBUG 1
+#define DEBUG 0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +29,6 @@
 #include "mm-base.h"
 #include "mm-visual.h"
 
-#define MAXAGENTS 16
 #define MSG_BFR_SZ 128
 
 #define TIMEOUT_MS_BOT 500
@@ -64,7 +63,6 @@ FILE* gamedata = NULL;
 static unsigned int NUMROUNDS = 0;
 
 // cow information
-#define MAXCOWS 100
 static unsigned int NUMCOWS = 0;
 static unsigned int MILKVALUES[MAXCOWS];
 
