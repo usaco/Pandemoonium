@@ -96,7 +96,7 @@ int main(int argc, char **argv)
 			sscanf(msg, "%*s %u", &NUMPLAYERS);
 			for (i = 0; i < NUMPLAYERS; ++i)
 			{
-				players[i].loc = 0;
+				players[i].loc = -1;
 				players[i].milk = 0;
 				players[i].id = i;
 			}

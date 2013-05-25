@@ -9,7 +9,8 @@ struct player_data
 	unsigned int id;
 
 	// information about the player
-	unsigned int milk, loc;
+	unsigned int milk;
+	int loc;
 };
 
 // my bot's data

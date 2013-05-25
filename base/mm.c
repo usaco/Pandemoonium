@@ -180,12 +180,12 @@ void play_game()
 	for (rnum = 0; rnum < NUMROUNDS; ++rnum)
 	{
 		// announce all the round information
-		sprintf(msg, "ROUND %u", 1+rnum);
+		sprintf(msg, "ROUND %u", rnum);
 		tell_all(msg, -1);
 
 		for (i = 0, a = agents; i < NUMAGENTS; ++a, ++i)
 		{
-			if (a->status != RUNNING) continue;
+			if (a->status != RUNNING) a->loc = -1;
 			sprintf(msg, "PLAYER %u %u %u", i, a->loc, a->milk);
 			tell_all(msg, -1);
 		}
@@ -252,10 +252,12 @@ int main(int argc, char** argv)
 	int maxmilk = 0;
 	struct agent_t *a;
 	for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
-		if (a->milk > maxmilk) maxmilk = a->milk;
+		if (a->milk > maxmilk && a->status == RUNNING)
+			maxmilk = a->milk;
 
-	for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a) if (a->milk == maxmilk)
-		printf("Player #%u (%s) wins!\n", i, a->name);
+	for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
+		if (a->milk == maxmilk && a->status == RUNNING)
+			printf("Player #%u (%s) wins!\n", i, a->name);
 
 	cleanup_bots();
 	return 0;
