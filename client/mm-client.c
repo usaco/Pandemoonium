@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 				else EXPECTED(tag, "PLAYER/GO");
 			}
 
-			rnum--; copyself();
+			copyself();
 			int k = player_turn(rnum, players, NUMPLAYERS);
 			if (k < 0 || k >= NUMCOWS) goto quit;
 			
