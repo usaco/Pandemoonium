@@ -276,7 +276,7 @@ void gr_rect(float x, float y, float w, float h)
 	glEnable(GL_TEXTURE_2D);
 }*/
 
-struct Image cow, field;
+struct Image cow, field, sun;
 unsigned int farmer_height;
 
 int setup_bcb_vis(int numagents, struct agent_t *agents, int *argc, char ***argv)
@@ -298,6 +298,7 @@ int setup_bcb_vis(int numagents, struct agent_t *agents, int *argc, char ***argv
 	
 	field = read_image("images/field.ppm");
 	cow = read_image("images/funnycow.ppm");
+	sun = read_image("images/sun.ppm");
 	
 	int i;
 	for (i = 0; i < numagents; ++i)
@@ -330,6 +331,8 @@ int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 		
 		if (a->milk > maxmilk) maxmilk = a->milk;
 	}
+
+	if (turn > 10 && turn % (int)log(turn)) return 1;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	gr_set_orthographic_projection();
@@ -370,19 +373,22 @@ int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 	{
 		struct VisData *vis = a->vis;
 		gr_draw_image(10, WINDOW_H - 190 + rowheight * i, farmerscale, vis->image);
-		gr_print_font(45, WINDOW_H - 190 + rowheight * i + 10, a->name, BLACK, GLUT_BITMAP_HELVETICA_10);
+		gr_print_font(45, WINDOW_H - 190 + rowheight * i + 10, a->name, BLACK, GLUT_BITMAP_HELVETICA_18);
 		
 		glColor4fv(vis->color);
 		gr_rect(150, WINDOW_H - 185 + rowheight * i, (WINDOW_W - 270) * (a->milk * 1.0 / maxmilk), rowheight - 10);
 		
 		sprintf(buffer, "%d", a->milk);
-		gr_print_font(WINDOW_W - 90, WINDOW_H - 190 + rowheight * i + 10, buffer, BLACK, GLUT_BITMAP_HELVETICA_10);
+		gr_print_font(WINDOW_W - 90, WINDOW_H - 190 + rowheight * i + 10, buffer, BLACK, GLUT_BITMAP_HELVETICA_18);
 	}
+
+	float sunscale = 0.6;
+	gr_draw_image((turn * 1.0 / NUMROUNDS) * WINDOW_W - sun.width/2, WINDOW_H - 220 - sun.height * sunscale, sunscale, sun);
 
 	glutSwapBuffers();
 	glutMainLoopEvent();
 
-	usleep(100000L);
+	usleep(10000000L / (10 + turn));
 
 	return 1;
 }

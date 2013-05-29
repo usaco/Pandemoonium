@@ -1,5 +1,6 @@
 CC=gcc
-CFLAGS=-g
+CFLAGS=-O2
+CXXFLAGS=-O2
 
 all: BOTNAME
 
@@ -7,7 +8,7 @@ mm-client.o: mm-client.c mm-client.h
 
 BOTNAME.o: BOTNAME.c mm-client.h
 BOTNAME: mm-client.o BOTNAME.o
-	${CC} ${CFLAGS} -o $@ $^
+	${CC} ${CFLAGS} -o $@ $^ -lm
 
 clean:
 	rm -f *.o
