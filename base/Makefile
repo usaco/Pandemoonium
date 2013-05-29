@@ -1,10 +1,8 @@
 CC=gcc
-CFLAGS=-g -Wall
+CFLAGS=-g -Wall -lm
+GL=-lglut -lGL -lGLU
 
-GTKFLAGS=`pkg-config --cflags gtk+-2.0 gthread-2.0`
-GTKLIBS=`pkg-config --cflags --libs gtk+-2.0 gthread-2.0`
-
-all: mm-null
+all: mm-null mm-opengl
 
 mm-visual.h: mm-base.h
 
@@ -15,6 +13,9 @@ mm.o: mm.c mm-base.h mm-visual.h
 
 mm-null: mm.o mm-null.o
 	${CC} ${CFLAGS} -o $@ $^
+
+mm-opengl: mm.o mm-opengl.o
+	${CC} ${CFLAGS} -o $@ ${GL} $^
 
 clean:
 	rm -f *.o

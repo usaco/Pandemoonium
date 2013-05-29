@@ -40,7 +40,7 @@
 #define PORTNO 1337
 #define PORTSTR xstr(PORTNO)
 
-/*#define max(a,b) \
+#define max(a,b) \
   ({ __typeof__ (a) _a = (a); \
   __typeof__ (b) _b = (b); \
   _a > _b ? _a : _b; })
@@ -48,10 +48,7 @@
 #define min(a,b) \
 ({ __typeof__ (a) _a = (a); \
 __typeof__ (b) _b = (b); \
-_a < _b ? _a : _b; })*/
-
-#define max(a,b) (a > b ? a : b)
-#define min(a,b) (a < b ? a : b)
+_a < _b ? _a : _b; })
 
 struct agent_t agents[MAXAGENTS];
 static unsigned int NUMAGENTS = 0;
@@ -60,11 +57,11 @@ static unsigned int NUMAGENTS = 0;
 FILE* gamedata = NULL;
 
 // round information
-static unsigned int NUMROUNDS = 0;
+unsigned int NUMROUNDS = 0;
 
 // cow information
-static unsigned int NUMCOWS = 0;
-static unsigned int MILKVALUES[MAXCOWS];
+unsigned int NUMCOWS = 0;
+unsigned int MILKVALUES[MAXCOWS];
 
 // setup a child and get its file descriptors
 void setup_agent(int, struct agent_t*, char*);
@@ -233,6 +230,11 @@ int main(int argc, char** argv)
 	gettimeofday(&tv, NULL);
 	srand(tv.tv_usec);
 
+	if (argc < 2)
+	{
+		fprintf(stderr, "USAGE: %s <datafile>\n", argv[0]);
+		exit(0);
+	}
 	gamedata = fopen(argv[1], "r");
 
 	fscanf(gamedata, "%u %u", &NUMCOWS, &NUMROUNDS);
@@ -243,21 +245,22 @@ int main(int argc, char** argv)
 	setup_game();
 	fclose(gamedata);
 
-	setup_bcb_vis(NUMAGENTS, agents, &argc, &argv);
+	if (setup_bcb_vis(NUMAGENTS, agents, &argc, &argv))
+	{
+		tell_all("READY", -1);
+		play_game();
+		close_bcb_vis();
 
-	tell_all("READY", -1);
-	play_game();
-	close_bcb_vis();
+		int maxmilk = 0;
+		struct agent_t *a;
+		for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
+			if (a->milk > maxmilk && a->status == RUNNING)
+				maxmilk = a->milk;
 
-	int maxmilk = 0;
-	struct agent_t *a;
-	for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
-		if (a->milk > maxmilk && a->status == RUNNING)
-			maxmilk = a->milk;
-
-	for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
-		if (a->milk == maxmilk && a->status == RUNNING)
-			printf("Player #%u (%s) wins!\n", i, a->name);
+		for (i = 0, a = agents; i < NUMAGENTS; ++i, ++a)
+			if (a->milk == maxmilk && a->status == RUNNING)
+				printf("Player #%u (%s) wins!\n", i, a->name);
+	}
 
 	cleanup_bots();
 	return 0;
