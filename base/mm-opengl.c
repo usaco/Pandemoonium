@@ -317,7 +317,7 @@ int setup_bcb_vis(int numagents, struct agent_t *agents, int *argc, char ***argv
 unsigned int cowpositions[MAXCOWS];
 unsigned int maxmilk = 0u;
 
-#define SCALE(x) log2(x) 
+#define SCALE(x) log(x)
 int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 {
 	int i; struct agent_t *a = agents;
@@ -330,7 +330,6 @@ int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 		
 		if (a->milk > maxmilk) maxmilk = a->milk;
 	}
-	printf(">> Window: (%dx%d)\n", WINDOW_W, WINDOW_H);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	gr_set_orthographic_projection();
@@ -358,7 +357,7 @@ int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 		gr_draw_image(cowpositions[a->loc] + 10 + i * 20, 120 - i * 20, 1.0, vis->image);
 	}
 	
-	glColor4f(1,1,1,0);
+	glColor4f(1,1,1,0.6);
 	gr_rect(0, WINDOW_H - 200, WINDOW_W, 200);
 	
 	gr_print_centered(WINDOW_W/2, WINDOW_H - 25, "PANDAMOONIUM", BLACK);
