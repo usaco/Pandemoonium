@@ -271,15 +271,11 @@ struct agent_t *_agents;
 int _turn;
 
 #define SCALE(x) log(x)
-#define FRAMESKIP 50
-
 int draw_screen(int numagents, struct agent_t *agents, const int turn)
 {
 	int i; struct agent_t *a = agents;
 	for (i = 0; i < numagents; ++a, ++i)
 		if (a->milk > maxmilk) maxmilk = a->milk;
-
-	if (turn > 10 && (turn % (int)log(turn))) return 1;
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	gr_set_orthographic_projection();
@@ -396,6 +392,7 @@ int setup_bcb_vis(int numagents, struct agent_t *agents, int *argc, char ***argv
 
 int update_bcb_vis(int numagents, struct agent_t *agents, const int turn)
 {
+	if (turn > 10 && (turn % (int)(2 * log(turn)))) return 1;
 	draw_screen(numagents, agents, turn);
 
 	_numagents = numagents;
